@@ -18,8 +18,8 @@ This set of auxiliary tools comes handy for those who want to make sure that:
 
 ### Binaries
 
-- **darwin** [amd64](https://github.com/cirocosta/hugo-utils/releases/download/v0.0.1/hugo-utils-darwin-amd64)
-- **linux** [amd64](https://github.com/cirocosta/hugo-utils/releases/download/v0.0.1/hugo-utils-linux-amd64)
+- **darwin** [amd64](https://github.com/cirocosta/hugo-utils/releases/download/0.0.2/hugo-utils_0.0.2_darwin_amd64.tar.gz)
+- **linux** [amd64](https://github.com/cirocosta/hugo-utils/releases/download/0.0.2/hugo-utils_0.0.2_linux_amd64.tar.gz)
 
 ### Using Go
 

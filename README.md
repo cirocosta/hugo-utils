@@ -1,6 +1,8 @@
-# hugo-utils
+<h1 align="center">hugo-utils</h1>
 
-> Tools for managing [Hugo](https://gohugo.io) websites.
+<h5 align="center">Tools for managing <a href="https://gohugo.io">Hugo</a> websites.</h5>
+
+<br/>
 
 `hugo-utils` contains a set of tools that I use to manage my own blog: [https://ops.tips](https://ops.tips).
 

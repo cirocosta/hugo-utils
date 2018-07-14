@@ -14,7 +14,19 @@ var List = cli.Command{
 	Name: "list",
 	Usage: `lists all content under a given path.
 
-Examples:
+   The 'list' command iterates over each content file (*.md)
+   found under a given root directory (--directory), then prints
+   to 'stdout' a description of each.
+
+   The default formatting displays the following attributes for
+   each page: title, keywords, tags, categories, slug, date.
+
+   A custom format can also be specified following Go template
+   rules. In this case, the render state contains:
+   - {{ . }}: the current page in the page traversal; and
+   - {{ .Pages }}: the list of all pages found.
+
+EXAMPLES:
 
    Display every property of the pages under a given
    section that lives under "./content/blog" using the default
@@ -75,11 +87,12 @@ func listAction(c *cli.Context) (err error) {
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 		for _, page := range pages {
 			fmt.Fprintf(w, "%s\t%s\n", "title", page.Title)
+			fmt.Fprintf(w, "%s\t%v\n", "slug", page.Slug)
+			fmt.Fprintf(w, "%s\t%v\n", "date", page.Date.Format("Jan 2, 2006"))
+			fmt.Fprintf(w, "%s\t%v\n", "last-mod", page.LastMod.Format("Jan 2, 2006"))
 			fmt.Fprintf(w, "%s\t%v\n", "keywords", page.Keywords)
 			fmt.Fprintf(w, "%s\t%v\n", "tags", page.Tags)
 			fmt.Fprintf(w, "%s\t%v\n", "categories", page.Categories)
-			fmt.Fprintf(w, "%s\t%v\n", "slug", page.Slug)
-			fmt.Fprintf(w, "%s\t%v\n", "date", page.Date.Format("Jan 2, 2006"))
 			fmt.Fprintf(w, "\n")
 		}
 		w.Flush()

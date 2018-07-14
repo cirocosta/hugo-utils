@@ -11,8 +11,8 @@ Although `hugo` by itself makes the production a breeze, when you start having a
 This set of auxiliary tools comes handy for those who want to make sure that:
 
 - their content is always up to date (remind you if old blog posts need attention);
-- every post is properly tagged; and
-- taxonomy terms (like, a specific category) have metadata alright.
+- every post is properly tagged (TODO); and 
+- taxonomy terms (like, a specific category) have metadata alright (TODO).
 
 ## Install
 
@@ -35,7 +35,19 @@ go get -u -v github.com/cirocosta/hugo-utils
 NAME:
    hugo-utils list - lists all content under a given path.
 
-Examples:
+   The 'list' command iterates over each content file (*.md)
+   found under a given root directory (--directory), then prints
+   to 'stdout' a description of each.
+
+   The default formatting displays the following attributes for
+   each page: title, keywords, tags, categories, slug, date.
+
+   A custom format can also be specified following Go template
+   rules. In this case, the render state contains:
+   - {{ . }}: the current page in the page traversal; and
+   - {{ .Pages }}: the list of all pages found.
+
+EXAMPLES:
 
    Display every property of the pages under a given
    section that lives under "./content/blog" using the default
@@ -64,5 +76,6 @@ USAGE:
 
 OPTIONS:
    --directory value  path to the directory where contents exist (.md)
+   
 ```
 

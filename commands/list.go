@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"path"
 	"text/tabwriter"
 	"text/template"
 
@@ -87,6 +88,7 @@ func listAction(c *cli.Context) (err error) {
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 		for _, page := range pages {
 			fmt.Fprintf(w, "%s\t%s\n", "title", page.Title)
+			fmt.Fprintf(w, "%s\t%v\n", "file", path.Base(page.Path))
 			fmt.Fprintf(w, "%s\t%v\n", "slug", page.Slug)
 			fmt.Fprintf(w, "%s\t%v\n", "date", page.Date.Format("Jan 2, 2006"))
 			fmt.Fprintf(w, "%s\t%v\n", "last-mod", page.LastMod.Format("Jan 2, 2006"))

@@ -32,6 +32,7 @@ type FrontMatter struct {
 	Draft       bool      `yaml:"draft,omitempty"`
 	Tags        []string  `yaml:"tags,omitempty"`
 	Categories  []string  `yaml:"categories,omitempty"`
+	Keywords    []string  `yaml:"keywords,omitempty"`
 }
 
 // ParsePage parses the page contents.

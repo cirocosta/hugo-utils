@@ -25,7 +25,7 @@ func main() {
 	}
 	app.Description = `hugo-utils provides missing features from the "hugo" CLI tool`
 	app.Commands = []cli.Command{
-		commands.Tags,
+		commands.List,
 	}
 
 	app.Run(os.Args)

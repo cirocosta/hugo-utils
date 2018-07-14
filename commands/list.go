@@ -57,6 +57,11 @@ EXAMPLES:
 			Name:  "directory",
 			Usage: "path to the directory where contents exist (.md)",
 		},
+		cli.StringFlag{
+			Name:  "type",
+			Usage: "content type to list entries by (pages|tags|categories)",
+			Value: "pages",
+		},
 	},
 }
 
@@ -67,8 +72,9 @@ type renderState struct {
 
 func listAction(c *cli.Context) (err error) {
 	var (
-		root   = c.String("directory")
-		format = c.Args().First()
+		root     = c.String("directory")
+		format   = c.Args().First()
+		listType = c.String("type")
 	)
 
 	if root == "" {
@@ -81,6 +87,40 @@ func listAction(c *cli.Context) (err error) {
 	if err != nil {
 		cli.ShowCommandHelp(c, "list")
 		err = cli.NewExitError(err, 1)
+		return
+	}
+
+	if listType == "tags" {
+		var tagsMapping = map[string][]*hugo.Page{}
+
+		for _, page := range pages {
+			if len(page.Keywords) == 0 {
+				continue
+			}
+
+			for _, tag := range page.Keywords {
+				mapping, ok := tagsMapping[tag]
+				if !ok {
+					tagsMapping[tag] = []*hugo.Page{page}
+					continue
+				}
+
+				mapping = append(mapping, page)
+				tagsMapping[tag] = mapping
+			}
+		}
+
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
+		for tag, tagPages := range tagsMapping {
+			fmt.Fprintf(w, "%s\n", tag)
+			for _, page := range tagPages {
+				fmt.Fprintf(w, "\t%s\t(%s)\n", page.Title, path.Base(page.Path))
+			}
+			fmt.Fprintf(w, "\n")
+			fmt.Fprintf(w, "\n")
+		}
+
+		w.Flush()
 		return
 	}
 

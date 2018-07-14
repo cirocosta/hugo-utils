@@ -76,6 +76,6 @@ USAGE:
 
 OPTIONS:
    --directory value  path to the directory where contents exist (.md)
-   
+   --type value       content type to list entries by (pages|tags|categories) (default: "pages")
 ```
 

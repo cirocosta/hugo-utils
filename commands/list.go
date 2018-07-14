@@ -111,11 +111,11 @@ func showTagsMap(c *cli.Context, pages []*hugo.Page) {
 	var tagsMapping = map[string][]*hugo.Page{}
 
 	for _, page := range pages {
-		if len(page.Keywords) == 0 {
+		if len(page.Tags) == 0 {
 			continue
 		}
 
-		for _, tag := range page.Keywords {
+		for _, tag := range page.Tags {
 			mapping, ok := tagsMapping[tag]
 			if !ok {
 				tagsMapping[tag] = []*hugo.Page{page}

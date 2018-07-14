@@ -87,8 +87,24 @@ func DiscoverMarkdownPaths(root string) (paths []string, err error) {
 		return
 	}
 
+	_, err = os.Stat(root)
+	if err != nil {
+		err = errors.Wrapf(err,
+			"failed to retrieve info from root path %s", root)
+		return
+	}
+
 	paths = make([]string, 0)
 	walkFunc := func(path string, info os.FileInfo, walkErr error) (err error) {
+		if err != nil {
+			return
+		}
+
+		if info == nil {
+			err = errors.Errorf("couldn't gather info from path %s", path)
+			return
+		}
+
 		if info.IsDir() {
 			return
 		}

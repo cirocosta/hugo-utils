@@ -47,6 +47,13 @@ var _ = Describe("Pages", func() {
 			})
 		})
 
+		Context("with inexistent root", func() {
+			It("fails", func() {
+				_, err := hugo.DiscoverMarkdownPaths("/inexistent/root")
+				Expect(err).ToNot(Succeed())
+			})
+		})
+
 		Context("with populated dir", func() {
 			It("succeeds", func() {
 				paths, err := hugo.DiscoverMarkdownPaths("testdata/content")

@@ -27,3 +27,42 @@ This set of auxiliary tools comes handy for those who want to make sure that:
 go get -u -v github.com/cirocosta/hugo-utils
 ```
 
+## Commands
+
+### List
+
+```sh
+NAME:
+   hugo-utils list - lists all content under a given path.
+
+Examples:
+
+   Display every property of the pages under a given
+   section that lives under "./content/blog" using the default
+   formatting:
+
+     hugo-utils \
+       --directory=./content/blog
+
+   Display the text of every page in a given section
+   that lives under "./content/blog" and their keywords:
+
+     hugo-utils \
+       --directory=./content/blog \
+       '{{ .Title }} - {{ .Keywords }}'
+
+   Display the path to the files that don't have keywords
+   specified:
+
+     hugo-utils \
+       --directory=./content/blog \
+       '{{ if eq (len .Keywords) 0 }} {{ .Path }} {{ end }}'
+
+
+USAGE:
+   hugo-utils list [command options] [format]
+
+OPTIONS:
+   --directory value  path to the directory where contents exist (.md)
+```
+

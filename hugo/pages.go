@@ -4,8 +4,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
-	"github.com/gernest/front"
+	"github.com/cirocosta/front"
 	"github.com/pkg/errors"
 )
 
@@ -16,7 +17,21 @@ type Page struct {
 
 	// FrontMatter corresponds to the parsed front
 	// matter of the page.
-	FrontMatter map[string]interface{}
+	FrontMatter `yaml:"-,inline"`
+}
+
+// FrontMatter corresponds to the parsed front
+// matter of the page.
+type FrontMatter struct {
+	Title       string    `yaml:"title,omitempty"`
+	Description string    `yaml:"description,omitempty"`
+	Slug        string    `yaml:"slug,omitempty"`
+	Image       string    `yaml:"image,omitempty"`
+	Date        time.Time `yaml:"date,omitempty"`
+	LastMod     time.Time `yaml:"lastmod,omitempty"`
+	Draft       bool      `yaml:"draft,omitempty"`
+	Tags        []string  `yaml:"tags,omitempty"`
+	Categories  []string  `yaml:"categories,omitempty"`
 }
 
 // ParsePage parses the page contents.
@@ -24,15 +39,13 @@ func ParsePage(r io.Reader) (page *Page, err error) {
 	m := front.NewMatter()
 	m.Handle("---", front.YAMLHandler)
 
-	fm, _, err := m.Parse(r)
+	page = new(Page)
+
+	_, err = m.Parse(r, &page.FrontMatter)
 	if err != nil {
 		err = errors.Wrapf(err,
 			"failed to parse front matter from reader")
 		return
-	}
-
-	page = &Page{
-		FrontMatter: fm,
 	}
 
 	return

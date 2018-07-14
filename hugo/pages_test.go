@@ -32,7 +32,9 @@ var _ = Describe("Pages", func() {
 			})
 
 			It("has has frontmatter parsed", func() {
-				Skip("TODO")
+				Expect(pages[0].Title).To(Equal("page1"))
+				Expect(pages[0].Date.Day()).To(Equal(2))
+				Expect(len(pages[0].Tags)).To(Equal(2))
 			})
 		})
 	})
@@ -121,8 +123,7 @@ var _ = Describe("Pages", func() {
 				})
 
 				It("has front matter parsed", func() {
-					_, ok := page.FrontMatter["title"]
-					Expect(ok).To(BeTrue())
+					Expect(page.Title).To(Equal("my thing"))
 				})
 			})
 		})

@@ -6,3 +6,4 @@ tags:
   - 'tag3'
 ---
 
+body

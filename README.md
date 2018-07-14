@@ -10,8 +10,8 @@ Although `hugo` by itself makes the production a breeze, when you start having a
 
 This set of auxiliary tools comes handy for those who want to make sure that:
 
-- their content is always up to date (remind you if old blog posts need attention);
-- every post is properly tagged (TODO); and 
+- every post is properly tagged; 
+- their content is always up to date (remind you if old blog posts need attention) (TODO); and
 - taxonomy terms (like, a specific category) have metadata alright (TODO).
 
 ## Install

@@ -112,7 +112,7 @@ func updateAction(c *cli.Context) (err error) {
 			return
 		}
 
-		err = mergo.Merge(&page.FrontMatter, updateFm)
+		err = mergo.Merge(&page.FrontMatter, updateFm, mergo.WithOverride)
 		if err != nil {
 			err = cli.NewExitError(err, 1)
 			return

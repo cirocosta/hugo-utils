@@ -145,3 +145,9 @@ OPTIONS:
    --filepath value  path to the page file
 ```
 
+tip: Use this command together with `find` and `xargs` to perform updates across a great number of files:
+
+```sh
+find . -name "*.md" | xargs -I {} -P 4 hugo-utils update --filepath={}
+```
+

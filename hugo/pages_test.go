@@ -1,16 +1,83 @@
 package hugo_test
 
 import (
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-
+	"bytes"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/cirocosta/hugo-utils/hugo"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Pages", func() {
+	Describe("Page#Write", func() {
+		var (
+			page *hugo.Page
+			err  error
+		)
+
+		BeforeEach(func() {
+			page = &hugo.Page{
+				FrontMatter: hugo.FrontMatter{
+					Title: "page title",
+					Date:  time.Date(2000, 2, 1, 12, 30, 0, 0, time.UTC),
+					Tags: []string{
+						"tag1",
+						"tag2",
+					},
+				},
+				Body: `this is
+the body`,
+			}
+		})
+
+		Context("having nil writer", func() {
+			It("fails", func() {
+				err = page.Write(nil)
+				Expect(err).ToNot(Succeed())
+			})
+		})
+
+		Context("w/ writer", func() {
+			var writer *bytes.Buffer
+
+			BeforeEach(func() {
+				writer = new(bytes.Buffer)
+			})
+
+			JustBeforeEach(func() {
+				err = page.Write(writer)
+
+			})
+
+			It("succeeds", func() {
+				Expect(err).To(Succeed())
+			})
+
+			It("gets propery written w/ default values", func() {
+				Expect(writer.String()).To(Equal(`---
+title: page title
+description: ""
+slug: ""
+image: ""
+date: 2000-02-01T12:30:00Z
+lastmod: 0001-01-01T00:00:00Z
+draft: false
+tags:
+- tag1
+- tag2
+categories: []
+keywords: []
+---
+this is
+the body`))
+			})
+		})
+	})
+
 	Describe("GatherPages", func() {
 		Context("with content directory having md pages w/ fm", func() {
 			var (
@@ -123,6 +190,10 @@ var _ = Describe("Pages", func() {
 
 				It("succeeds", func() {
 					Expect(err).To(Succeed())
+				})
+
+				It("has the body captured", func() {
+					Expect(page.Body).To(Equal("this is the body"))
 				})
 
 				It("has path properly set", func() {

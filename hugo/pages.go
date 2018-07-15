@@ -4,10 +4,12 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/cirocosta/front"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
 )
 
 // Page represents a content page.
@@ -18,21 +20,67 @@ type Page struct {
 	// FrontMatter corresponds to the parsed front
 	// matter of the page.
 	FrontMatter `yaml:"-,inline"`
+
+	// Body contains the actual content of the page.
+	Body string
+}
+
+// Write writes the contents of a page to a given destination
+// writer.
+func (p *Page) Write(w io.Writer) (err error) {
+	if w == nil {
+		err = errors.Errorf("writer msut not be nil")
+		return
+	}
+
+	_, err = w.Write([]byte("---\n"))
+	if err != nil {
+		err = errors.Wrapf(err, "failed to write openning front matter separator")
+		return
+	}
+
+	encoder := yaml.NewEncoder(w)
+	err = encoder.Encode(&p.FrontMatter)
+	if err != nil {
+		err = errors.Wrapf(err, "failed to encode frontmatter to document")
+		return
+	}
+
+	err = encoder.Close()
+	if err != nil {
+		err = errors.Wrapf(err, "failed to close frontmatter encoder")
+		return
+	}
+
+	_, err = w.Write([]byte("---\n"))
+	if err != nil {
+		err = errors.Wrapf(err, "failed to write closing front matter separator")
+		return
+	}
+
+	r := strings.NewReader(p.Body)
+	_, err = io.Copy(w, r)
+	if err != nil {
+		err = errors.Wrapf(err, "failed to copy body to writer")
+		return
+	}
+
+	return
 }
 
 // FrontMatter corresponds to the parsed front
 // matter of the page.
 type FrontMatter struct {
-	Title       string    `yaml:"title,omitempty"`
-	Description string    `yaml:"description,omitempty"`
-	Slug        string    `yaml:"slug,omitempty"`
-	Image       string    `yaml:"image,omitempty"`
-	Date        time.Time `yaml:"date,omitempty"`
-	LastMod     time.Time `yaml:"lastmod,omitempty"`
-	Draft       bool      `yaml:"draft,omitempty"`
-	Tags        []string  `yaml:"tags,omitempty"`
-	Categories  []string  `yaml:"categories,omitempty"`
-	Keywords    []string  `yaml:"keywords,omitempty"`
+	Title       string    `yaml:"title"`
+	Description string    `yaml:"description"`
+	Slug        string    `yaml:"slug"`
+	Image       string    `yaml:"image"`
+	Date        time.Time `yaml:"date"`
+	LastMod     time.Time `yaml:"lastmod"`
+	Draft       bool      `yaml:"draft"`
+	Tags        []string  `yaml:"tags"`
+	Categories  []string  `yaml:"categories"`
+	Keywords    []string  `yaml:"keywords"`
 }
 
 // ParsePage parses the page contents.
@@ -41,8 +89,7 @@ func ParsePage(r io.Reader) (page *Page, err error) {
 	m.Handle("---", front.YAMLHandler)
 
 	page = new(Page)
-
-	_, err = m.Parse(r, &page.FrontMatter)
+	page.Body, err = m.Parse(r, &page.FrontMatter)
 	if err != nil {
 		err = errors.Wrapf(err,
 			"failed to parse front matter from reader")

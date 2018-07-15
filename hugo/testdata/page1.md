@@ -5,5 +5,4 @@ tags:
   - 'tag1'
   - 'tag2'
 ---
-
-body
+this is the body

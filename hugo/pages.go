@@ -1,13 +1,12 @@
 package hugo
 
 import (
+	"bufio"
+	"bytes"
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
-	"time"
 
-	"github.com/cirocosta/front"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
@@ -22,7 +21,81 @@ type Page struct {
 	FrontMatter `yaml:"-,inline"`
 
 	// Body contains the actual content of the page.
-	Body string
+	Body []byte
+}
+
+var frontMatterDelim = []byte("---")
+
+type (
+	ParseState uint8
+)
+
+const (
+	ParseStateStart ParseState = iota
+	ParseStateDelimStart
+	ParseStateFrontMatter
+	ParseStateDelimEnd
+	ParseStateBody
+)
+
+// SplitFrontMatterAndBody takes a given reader and then
+// splits its content in two:
+// - FrontMatter
+// - Body
+func SplitFrontMatterAndBody(r io.Reader) (frontMatter, body []byte, err error) {
+	if r == nil {
+		err = errors.Errorf(
+			"a reader must be specified")
+		return
+	}
+
+	var (
+		text            []byte
+		scanner         = bufio.NewScanner(r)
+		delimetersFound = 0
+		state           = ParseStateStart
+	)
+
+	body = make([]byte, 0)
+	frontMatter = make([]byte, 0)
+
+	for scanner.Scan() {
+		text = scanner.Bytes()
+
+		if delimetersFound < 2 {
+			if bytes.Equal(frontMatterDelim, text) {
+				delimetersFound++
+
+				if delimetersFound == 1 {
+					state = ParseStateFrontMatter
+				} else {
+					state = ParseStateDelimEnd
+				}
+			}
+		}
+
+		switch state {
+		case ParseStateBody:
+			body = append(body, text...)
+			body = append(body, '\n')
+		case ParseStateFrontMatter:
+			frontMatter = append(frontMatter, text...)
+			frontMatter = append(frontMatter, '\n')
+		case ParseStateDelimStart:
+			continue
+		case ParseStateDelimEnd:
+			state = ParseStateBody
+		}
+	}
+
+	err = scanner.Err()
+	if err != nil {
+		err = errors.Wrapf(err,
+			"failed while scanning page")
+		return
+	}
+
+	return
 }
 
 // Write writes the contents of a page to a given destination
@@ -58,7 +131,7 @@ func (p *Page) Write(w io.Writer) (err error) {
 		return
 	}
 
-	r := strings.NewReader(p.Body)
+	r := bytes.NewReader(p.Body)
 	_, err = io.Copy(w, r)
 	if err != nil {
 		err = errors.Wrapf(err, "failed to copy body to writer")
@@ -68,28 +141,17 @@ func (p *Page) Write(w io.Writer) (err error) {
 	return
 }
 
-// FrontMatter corresponds to the parsed front
-// matter of the page.
-type FrontMatter struct {
-	Title       string    `yaml:"title"`
-	Description string    `yaml:"description"`
-	Slug        string    `yaml:"slug"`
-	Image       string    `yaml:"image"`
-	Date        time.Time `yaml:"date"`
-	LastMod     time.Time `yaml:"lastmod"`
-	Tags        []string  `yaml:"tags"`
-	Categories  []string  `yaml:"categories"`
-	Keywords    []string  `yaml:"keywords"`
-	Draft       bool      `yaml:"draft"`
-}
-
 // ParsePage parses the page contents.
 func ParsePage(r io.Reader) (page *Page, err error) {
-	m := front.NewMatter()
-	m.Handle("---", front.YAMLHandler)
+	front, body, err := SplitFrontMatterAndBody(r)
+	if err != nil {
+		err = errors.Wrapf(err,
+			"failed to split frommatter and body from content page")
+		return
+	}
 
-	page = new(Page)
-	page.Body, err = m.Parse(r, &page.FrontMatter)
+	page = &Page{Body: body}
+	err = yaml.Unmarshal(front, &page.FrontMatter)
 	if err != nil {
 		err = errors.Wrapf(err,
 			"failed to parse front matter from reader")
@@ -98,7 +160,6 @@ func ParsePage(r io.Reader) (page *Page, err error) {
 
 	// TODO remove this
 	page.LastMod = page.Date
-
 	return
 }
 

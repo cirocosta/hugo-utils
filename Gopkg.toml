@@ -26,8 +26,8 @@
 
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/cirocosta/front"
+  name = "github.com/imdario/mergo"
+  version = "0.3.5"
 
 [[constraint]]
   name = "github.com/onsi/ginkgo"
@@ -44,6 +44,10 @@
 [[constraint]]
   name = "gopkg.in/urfave/cli.v1"
   version = "1.20.0"
+
+[[constraint]]
+  name = "gopkg.in/yaml.v2"
+  version = "2.2.1"
 
 [prune]
   go-tests = true

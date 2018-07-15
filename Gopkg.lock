@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/cirocosta/front"
+  name = "github.com/imdario/mergo"
   packages = ["."]
-  revision = "6cab465fe406523003cac887c8251c9dbd989446"
+  revision = "9316a62528ac99aaecb4e47eadd6dc8aa6533d58"
+  version = "v0.3.5"
 
 [[projects]]
   name = "github.com/onsi/ginkgo"
@@ -71,7 +71,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -112,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cb521d93ce8cb86bd3f55b89fccf4d721e3210af163e709a3cb5bdb4b74fad39"
+  inputs-digest = "df1e16a8d801292cd5998251f40862b370d17c47ea18e7eb785930d87a92243c"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -29,8 +29,8 @@ var _ = Describe("Pages", func() {
 						"tag2",
 					},
 				},
-				Body: `this is
-the body`,
+				Body: []byte(`this is
+the body`),
 			}
 		})
 
@@ -98,7 +98,7 @@ the body`))
 				Expect(pages[1].Path).To(Equal("testdata/content/page2.md"))
 			})
 
-			It("has has frontmatter parsed", func() {
+			It("has frontmatter parsed", func() {
 				Expect(pages[0].Title).To(Equal("page1"))
 				Expect(pages[0].Date.Day()).To(Equal(2))
 				Expect(len(pages[0].Tags)).To(Equal(2))
@@ -193,7 +193,8 @@ the body`))
 				})
 
 				It("has the body captured", func() {
-					Expect(page.Body).To(Equal("this is the body"))
+					Expect(string(page.Body)).To(Equal(`this is the body
+`))
 				})
 
 				It("has path properly set", func() {

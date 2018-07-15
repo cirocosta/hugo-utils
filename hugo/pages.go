@@ -96,6 +96,9 @@ func ParsePage(r io.Reader) (page *Page, err error) {
 		return
 	}
 
+	// TODO remove this
+	page.LastMod = page.Date
+
 	return
 }
 

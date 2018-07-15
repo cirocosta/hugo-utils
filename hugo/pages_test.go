@@ -65,12 +65,12 @@ slug: ""
 image: ""
 date: 2000-02-01T12:30:00Z
 lastmod: 0001-01-01T00:00:00Z
-draft: false
 tags:
 - tag1
 - tag2
 categories: []
 keywords: []
+draft: false
 ---
 this is
 the body`))

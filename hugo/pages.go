@@ -77,10 +77,10 @@ type FrontMatter struct {
 	Image       string    `yaml:"image"`
 	Date        time.Time `yaml:"date"`
 	LastMod     time.Time `yaml:"lastmod"`
-	Draft       bool      `yaml:"draft"`
 	Tags        []string  `yaml:"tags"`
 	Categories  []string  `yaml:"categories"`
 	Keywords    []string  `yaml:"keywords"`
+	Draft       bool      `yaml:"draft"`
 }
 
 // ParsePage parses the page contents.

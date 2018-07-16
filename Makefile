@@ -1,6 +1,9 @@
 build:
 	go build -i
 
+install:
+	go install -v
+
 fmt:
 	go fmt ./...
 

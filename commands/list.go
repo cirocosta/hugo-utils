@@ -13,9 +13,8 @@ import (
 
 var List = cli.Command{
 	Name: "list",
-	Usage: `lists all content under a given path.
-
-   The 'list' command iterates over each content file (*.md)
+	Usage: "lists all content under a given path.",
+	Description: `The 'list' command iterates over each content file (*.md)
    found under a given root directory (--directory), then prints
    to 'stdout' a description of each.
 

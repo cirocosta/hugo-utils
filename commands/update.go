@@ -12,9 +12,8 @@ import (
 
 var Update = cli.Command{
 	Name: "update",
-	Usage: `updates the frontmatter of a page.
-
-   The 'update' command takes care of updating the frontmatter
+	Usage: "updates the frontmatter of a page.",
+	Description: `The 'update' command takes care of updating the frontmatter
    of a given content page (e.g., /content/blog/mypost.md).
 
    Taking a desired update in the form of 'yaml', it parses the

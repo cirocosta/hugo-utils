@@ -61,6 +61,10 @@ EXAMPLES:
 			Usage: "content type to list entries by (pages|tags|categories)",
 			Value: "pages",
 		},
+		cli.BoolFlag{
+			Name: "draft",
+			Usage: "only show drafts",
+		},
 	},
 }
 
@@ -70,11 +74,20 @@ type renderState struct {
 }
 
 func showPagesList(c *cli.Context, pages []*hugo.Page) {
-	var format = c.String("format")
+	var (
+		format = c.String("format")
+		draft = c.Bool("draft")
+	)
 
 	if format == "" {
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 4, ' ', 0)
 		for _, page := range pages {
+			if draft {
+				if !page.Draft {
+					continue
+				}
+			}
+
 			fmt.Fprintf(w, "%s\t%s\n", "title", page.Title)
 			fmt.Fprintf(w, "%s\t%v\n", "file", path.Base(page.Path))
 			fmt.Fprintf(w, "%s\t%v\n", "slug", page.Slug)

@@ -35,6 +35,10 @@ go get -u -v github.com/cirocosta/hugo-utils
 NAME:
    hugo-utils list - lists all content under a given path.
 
+USAGE:
+   hugo-utils list [command options] [format]
+
+DESCRIPTION:
    The 'list' command iterates over each content file (*.md)
    found under a given root directory (--directory), then prints
    to 'stdout' a description of each.
@@ -71,12 +75,11 @@ EXAMPLES:
        '{{ if eq (len .Keywords) 0 }} {{ .Path }} {{ end }}'
 
 
-USAGE:
-   hugo-utils list [command options] [format]
-
 OPTIONS:
    --directory value  path to the directory where contents exist (.md)
    --type value       content type to list entries by (pages|tags|categories) (default: "pages")
+   --sort value       thing to sort by (title|date|lastmod) (default: "lastmod")
+   --draft            only show drafts
 ```
 
 ### Update

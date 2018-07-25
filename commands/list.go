@@ -101,7 +101,7 @@ func showPagesList(c *cli.Context, pages []*hugo.Page) {
 			fmt.Fprintf(w, "%s\t%v\n", "last-mod", page.LastMod.Format("Jan 2, 2006"))
 			fmt.Fprintf(w, "%s\t%v\n", "keywords", page.Keywords)
 			fmt.Fprintf(w, "%s\t%v\n", "tags", page.Tags)
-			fmt.Fprintf(w, "%s\t%v\n", "categories", page.Categories)
+			fmt.Fprintf(w, "%s\t%v\n", "draft", page.Draft)
 			fmt.Fprintf(w, "\n")
 		}
 		w.Flush()

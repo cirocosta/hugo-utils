@@ -11,7 +11,7 @@ import (
 )
 
 var Update = cli.Command{
-	Name: "update",
+	Name:  "update",
 	Usage: "updates the frontmatter of a page.",
 	Description: `The 'update' command takes care of updating the frontmatter
    of a given content page (e.g., /content/blog/mypost.md).

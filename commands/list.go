@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sort"
 	"text/tabwriter"
 	"text/template"
 
@@ -12,7 +13,7 @@ import (
 )
 
 var List = cli.Command{
-	Name: "list",
+	Name:  "list",
 	Usage: "lists all content under a given path.",
 	Description: `The 'list' command iterates over each content file (*.md)
    found under a given root directory (--directory), then prints
@@ -61,8 +62,13 @@ EXAMPLES:
 			Usage: "content type to list entries by (pages|tags|categories)",
 			Value: "pages",
 		},
+		cli.StringFlag{
+			Name:  "sort",
+			Usage: "thing to sort by (title|date|lastmod)",
+			Value: "lastmod",
+		},
 		cli.BoolFlag{
-			Name: "draft",
+			Name:  "draft",
 			Usage: "only show drafts",
 		},
 	},
@@ -76,7 +82,7 @@ type renderState struct {
 func showPagesList(c *cli.Context, pages []*hugo.Page) {
 	var (
 		format = c.String("format")
-		draft = c.Bool("draft")
+		draft  = c.Bool("draft")
 	)
 
 	if format == "" {
@@ -158,6 +164,7 @@ func listAction(c *cli.Context) (err error) {
 	var (
 		root     = c.String("directory")
 		listType = c.String("type")
+		sortBy   = c.String("sort")
 	)
 
 	if root == "" {
@@ -171,6 +178,27 @@ func listAction(c *cli.Context) (err error) {
 		cli.ShowCommandHelp(c, "list")
 		err = cli.NewExitError(err, 1)
 		return
+	}
+
+	if sortBy != "" {
+		switch sortBy {
+		case "title":
+			sort.Slice(pages, func(i, j int) bool {
+				return pages[i].Title < pages[j].Title
+			})
+		case "date":
+			sort.Slice(pages, func(i, j int) bool {
+				return pages[i].Date.Before(pages[j].Date)
+			})
+		case "lastmod":
+			sort.Slice(pages, func(i, j int) bool {
+				return pages[i].LastMod.Before(pages[j].LastMod)
+			})
+		default:
+			cli.ShowCommandHelp(c, "list")
+			err = cli.NewExitError("unknown sort type", 1)
+			return
+		}
 	}
 
 	switch listType {
